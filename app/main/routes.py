@@ -5,4 +5,4 @@ main = Blueprint("main", __name__)
 
 @main.route("/")
 def home():
-    return "Hello, Cooking App!"
+    return render_template("home.html")
