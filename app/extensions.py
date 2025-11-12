@@ -5,16 +5,21 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_principal import Principal
 from flask_bootstrap import Bootstrap5
+from app.models.user_model import User
 
 mongo = PyMongo()
 login_manager = LoginManager()
+login_manager.login_view = "auth.login"
+login_manager.login_message_category = "info"
+
 mail = Mail()
 limiter = Limiter(key_func=get_remote_address)
 principals = Principal()
 bootstrap = Bootstrap5()
 
-# Temporary fix for login_manager
+
 @login_manager.user_loader
 def load_user(user_id):
-    return None  # We'll implement this properly later
-
+    from app.extensions import mongo
+    user_data = mongo.db.users.find_one({"_id":(user_id)})
+    return User(user_data) if user_data else None
