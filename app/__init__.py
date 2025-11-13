@@ -28,4 +28,5 @@ def create_app():
     app.register_blueprint(recipes)
     app.register_blueprint(profile)
 
+
     return app
