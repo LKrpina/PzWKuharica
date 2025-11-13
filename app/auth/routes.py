@@ -1,5 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user
+from flask_mail import Message
+from flask import url_for
+from app.extensions import mail
 from app.extensions import mongo
 from app.models.user_model import User
 from .forms import RegisterForm, LoginForm
@@ -25,6 +28,10 @@ def register():
             "email_verified": False
         }
         mongo.db.users.insert_one(user_data)
+
+        user = User(user_data)
+        send_verification_email(user)
+
         flash("Registration successful! You can now log in.", "success")
         return redirect(url_for("auth.login"))
 
@@ -54,3 +61,29 @@ def logout():
     logout_user()
     flash("You have been logged out.", "info")
     return redirect(url_for("main.home"))
+
+@auth.route("/verify/<token>")
+def verify_email(token):
+    error = User.verify_email(token)
+    if error:
+        flash(error, "danger")
+        return redirect(url_for("auth.login"))
+
+    flash("Your email has been verified!", "success")
+    return redirect(url_for("auth.login"))
+
+def send_verification_email(user):
+    token = user.generate_verification_token()
+    verify_url = url_for("auth.verify_email", token = token, _external = True)
+
+    msg = Message(
+        subject = "Verify your Email - Cooking App",
+        recipients = [user.email],
+        body = (
+            f"Hi {user.name}, \n\n"
+            f"Please click the link below to verify your email:\n"
+            f"{verify_url}\n\n"
+            f"This link will expire in 1 hour!"
+        ),
+    )
+    mail.send(msg)

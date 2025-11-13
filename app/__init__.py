@@ -14,6 +14,8 @@ def create_app():
     principals.init_app(app)
     bootstrap.init_app(app)
     register_error_handlers(app)
+
+    app.config["USERS_COLLECTION"] = mongo.db.users
     
 
     from .main.routes import main

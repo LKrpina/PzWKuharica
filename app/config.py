@@ -19,6 +19,8 @@ class Config:
     # Timeout postavke za Render (Render blokira odlazne konekcije na određene portove)
     MAIL_TIMEOUT = int(os.getenv('MAIL_TIMEOUT', 10))
     MAIL_SUPPRESS_SEND = os.getenv('MAIL_SUPPRESS_SEND', 'False').lower() in ('true', '1', 'yes')
+
+    USERS_COLLECTION = None 
     
 
     RATELIMIT_DEFAULT = "200 per day;50 per hour"
