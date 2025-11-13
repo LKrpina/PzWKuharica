@@ -2,13 +2,14 @@ from flask import Flask
 from .extensions import mongo, login_manager, mail, limiter, principals, bootstrap
 from .config import Config
 from .main.errors import register_error_handlers
+from .profile.routes import profile
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    mongo.init_app(app)
     login_manager.init_app(app)
+    mongo.init_app(app)
     mail.init_app(app)
     limiter.init_app(app)
     principals.init_app(app)
@@ -25,5 +26,6 @@ def create_app():
     app.register_blueprint(main)
     app.register_blueprint(auth)
     app.register_blueprint(recipes)
+    app.register_blueprint(profile)
 
     return app

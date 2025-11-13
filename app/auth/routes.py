@@ -41,6 +41,7 @@ def register():
 @auth.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
+        flash("You are already logged in!","info")
         return redirect(url_for("main.home"))
 
     form = LoginForm()
@@ -49,6 +50,7 @@ def login():
         if user_data and User(user_data).check_password(form.password.data):
             user = User(user_data)
             login_user(user)
+            print("Logged in:", current_user.is_authenticated)
             flash(f"Welcome back, {user.name}!", "success")
             return redirect(url_for("main.home"))
         else:

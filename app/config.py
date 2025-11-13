@@ -7,6 +7,14 @@ load_dotenv()
 class Config:
 
     SECRET_KEY = os.getenv("SECRET_KEY", "supertajnikljuc")
+    
+    SESSION_COOKIE_NAME = "session"
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = False  # must be False for localhost
+    REMEMBER_COOKIE_DURATION = 86400  # 1 day
+    SESSION_PERMANENT = False
+
     MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/mydatabase")
 
     MAIL_SERVER = os.getenv('MAIL_SERVER', 'localhost')

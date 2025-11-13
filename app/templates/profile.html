@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Profile - Cooking App{% endblock %}
+{% block content %}
+
+    <div class="container mt-5">
+        <div class="card shadow-sm p-4" style="max-width: 600px; margin: auto;">
+            <h3 class="mb-3 text-center">Profile</h3>
+            <p><strong>Name:</strong> {{ user.name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Description:</strong> {{ user.description or "No description yet." }}</p>
+            <p><strong>Date of birth:</strong> {{ user.date_of_birth or "Not set" }}</p>
+            <a href="{{ url_for('profile.edit_profile') }}" class="btn btn-primary w-100 mt-3">Edit Profile</a>
+        </div>
+    </div>
+
+{% endblock %}
