@@ -48,11 +48,7 @@ def edit_profile():
         return redirect(url_for("profile.view_profile"))
 
     if request.method == "GET" and user:
-        print("DEBUG: User data from DB:", user)
-        print("DEBUG: Name from DB:", user.get("name"))
-        print("DEBUG: Description from DB:", user.get("description"))
-
-
+        
         form.name.data = user.get("name")
         form.description.data = user.get("description")
         if user.get("date_of_birth"):
