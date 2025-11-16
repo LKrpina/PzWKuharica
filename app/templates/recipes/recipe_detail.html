@@ -9,6 +9,14 @@
         <h2 class="mb-3">{{ recipe.title }}</h2>
 
         <p class="text-muted">
+            Created by:
+            <a href="{{ url_for('profile.public_profile', user_id=recipe.created_by) }}">
+                {{ recipe.creator_name }}
+            </a>
+        </p>
+
+
+        <p class="text-muted">
             Category: <strong>{{ recipe.category }}</strong> |
             Created at: {{ recipe.created_at.strftime("%d.%m.%Y") }}
         </p>
@@ -24,6 +32,9 @@
         </div>
 
         {% if current_user.is_authenticated and (current_user.id == recipe.created_by or current_user.is_admin) %}
+        {% if current_user.is_admin %}
+                <p class="text-danger mt-3"><strong>Admin Options:</strong></p>
+            {% endif %}
             <a href="{{ url_for('recipes.edit_recipe', recipe_id=recipe.id) }}" 
             class="btn btn-warning mt-3">Edit Recipe</a>
 

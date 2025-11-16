@@ -10,4 +10,3 @@ class ProfileForm(FlaskForm):
     profile_image = FileField("Profile Image", validators=[FileAllowed(["jpg", "jpeg", "png"])])
     submit = SubmitField("Save Changes")
 
-
