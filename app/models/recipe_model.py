@@ -3,8 +3,8 @@ from bson import ObjectId
 
 class Recipe:
     def __init__(self,data):
-        self.id = str(data("_id"))
-        self.id = data.get("title")
+        self.id = str(data.get("_id"))
+        self.title = data.get("title")
         self.description = data.get("description")
         self.description_html = data.get("description_html")
         self.category = data.get("category")

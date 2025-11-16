@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SearchField, SubmitField
+from wtforms import StringField, TextAreaField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Length,Optional
 from flask_wtf.file import FileField, FileAllowed
 
@@ -22,7 +22,7 @@ class RecipeForm(FlaskForm):
         render_kw={"placeholder": "Write your recipe here. (In markdown)", "rows": 8}
     )
 
-    category = SearchField(
+    category = SelectField(
         "Category",
         validators=[DataRequired(message="Choose a category!")],
         choices=[

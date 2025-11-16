@@ -23,16 +23,6 @@
             {{ recipe.description_html | safe }}
         </div>
 
-        {% if recipe.allergies %}
-        <hr>
-        <h5>Allergens:</h5>
-        <ul>
-            {% for a in recipe.allergies %}
-            <li>{{ a }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-
         {% if current_user.is_authenticated and (current_user.id == recipe.created_by or current_user.is_admin) %}
         <form method="POST" action="{{ url_for('recipes.delete_recipe', recipe_id=recipe.id) }}">
             <button class="btn btn-danger mt-3"

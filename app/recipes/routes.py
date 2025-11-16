@@ -24,7 +24,7 @@ def new_recipe():
 
     if form.validate_on_submit():
 
-        markdown_text = form.description.deta
+        markdown_text = form.description.data
         html_text = markdown_to_html(markdown_text)
 
         image_id = None
