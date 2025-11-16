@@ -101,3 +101,64 @@ def delete_recipe(recipe_id):
 
     flash("Recipe deleted successfully!", "success")
     return redirect(url_for("recipes.all_recipes"))
+
+
+@recipes.route("/recipes/<recipe_id>/edit", methods=["GET","POST"])
+@login_required
+def edit_recipe(recipe_id):
+    from app.models.recipe_model import Recipe
+    fs = GridFS(mongo.db)
+
+    recipe_data = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    if not recipe_data:
+        flash("Recipe not found!", "danger")
+        return redirect(url_for("recipes.all_recipes"))
+    
+    recipe = Recipe(recipe_data)
+
+
+    if recipe.created_by != current_user.id and not current_user.is_admin:
+        flash("You do not have permission to edit this recipe.", "danger")
+        return redirect(url_for("recipes.recipe_detail", recipe_id=recipe_id))
+    
+    form = RecipeForm(
+        title = recipe.title,
+        description = recipe.description,
+        category = recipe.category
+    )
+
+    if form.validate_on_submit():
+
+        markdown_text = form.description.data
+        html_text = markdown_to_html(markdown_text)
+
+        image_id = recipe.image_id
+        if form.image.data:
+            if image_id:
+                try:
+                    fs.delete(ObjectId(image_id))
+                except:
+                    pass
+
+            image_file = form.image.data
+            image_id = fs.put(
+                image_file,
+                filename=image_file.filename,
+                content_type=image_file.content_type
+            )
+        
+        mongo.db.recipes.update_one(
+            {"_id": ObjectId(recipe_id)},
+            {"$set": {
+                "title": form.title.data,
+                "description": markdown_text,
+                "description_html": html_text,
+                "category": form.category.data,
+                "image_id": image_id
+            }}
+        )
+
+        flash("Your recipe has been updated!", "success")
+        return redirect(url_for("recipes.recipe_detail", recipe_id=recipe_id))
+    
+    return render_template("recipes/edit_recipe.html", form=form, recipe=recipe)
