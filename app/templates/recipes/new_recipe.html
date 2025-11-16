@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}New Recipe{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow p-4 mx-auto" style="max-width: 700px;">
+        <h2 class="mb-3 text-center">Create a New Recipe</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                {{ form.title.label(class="form-label") }}
+                {{ form.title(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.category.label(class="form-label") }}
+                {{ form.category(class="form-select") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.allergies.label(class="form-label") }}
+                {{ form.allergies(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.image.label(class="form-label") }}
+                {{ form.image(class="form-control") }}
+            </div>
+
+            {{ form.submit(class="btn btn-primary w-100 mt-3") }}
+        </form>
+    </div>
+</div>
+{% endblock %}
