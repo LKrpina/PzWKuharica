@@ -3,7 +3,6 @@ from .extensions import mongo, login_manager, mail, limiter, principals, bootstr
 from .config import Config
 from .main.errors import register_error_handlers
 from .profile.routes import profile
-from app.admin import admin
 
 def create_app():
     app = Flask(__name__)
@@ -28,6 +27,5 @@ def create_app():
     app.register_blueprint(auth)
     app.register_blueprint(recipes)
     app.register_blueprint(profile)
-    app.register_blueprint(admin)
 
     return app
