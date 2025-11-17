@@ -1,6 +1,5 @@
 from datetime import datetime
 from bson import ObjectId
-from app.extensions import mongo
 
 class Recipe:
     def __init__(self,data):
@@ -11,10 +10,8 @@ class Recipe:
         self.category = data.get("category")
         self.image_id = data.get("image_id")
         self.created_by = data.get("created_by")
-        self.created_at = data.get("created_at", datetime.now)
+        self.created_at = data.get("created_at", datetime.utcnow)
 
-        user = mongo.db.users.find_one({"_id": ObjectId(self.created_by)})
-        self.creator_name = user.get("name") if user else "Unknown"
     
     @staticmethod
     def from_id(collection,recipe_id):
