@@ -16,7 +16,7 @@ class User(UserMixin):
         self.description = data.get("description")
         self.date_of_birth = data.get("date_of_birth")
         self.email_verified = data.get("email_verified", False)
-        self.created_at = data.get("created_at", datetime.utcnow())
+        self.created_at = data.get("created_at", datetime.now())
 
     @staticmethod
     def hash_password(password):

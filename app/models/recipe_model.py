@@ -10,7 +10,7 @@ class Recipe:
         self.category = data.get("category")
         self.image_id = data.get("image_id")
         self.created_by = data.get("created_by")
-        self.created_at = data.get("created_at", datetime.utcnow)
+        self.created_at = data.get("created_at", datetime.now)
 
     
     @staticmethod
