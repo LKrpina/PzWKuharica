@@ -82,7 +82,7 @@ def send_verification_email(user):
     verify_url = url_for("auth.verify_email", token = token, _external = True)
 
     msg = Message(
-        subject = "Verify your Email - Cooking App",
+        subject = "Verify your Email - FamilyRecipes",
         recipients = [user.email],
         body = (
             f"Hi {user.name}, \n\n"

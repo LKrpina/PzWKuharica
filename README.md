@@ -1,4 +1,4 @@
-# PzW Kuharica (Cooking App)
+# PzW Kuharica (FamilyRecipes)
 
 Small Flask + MongoDB recipe app used for a school project. It includes user registration, email verification, recipe CRUD with image uploads (GridFS), admin tools and basic rate-limiting.
 

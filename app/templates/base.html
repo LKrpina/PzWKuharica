@@ -4,7 +4,7 @@
     {% block head %}
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>{% block title %}Cooking App{% endblock %}</title>
+  <title>{% block title %}FamilyRecipes{% endblock %}</title>
       {{ bootstrap.load_css() }}
       <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     {% endblock %}
@@ -13,7 +13,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-custom mb-4">
       <div class="container">
-        <a class="navbar-brand fw-bold" href="{{ url_for('main.home') }}">🍽️ Cooking App</a>
+  <a class="navbar-brand fw-bold" href="{{ url_for('main.home') }}">🍽️ FamilyRecipes</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -68,8 +68,8 @@
     <!-- Footer -->
     <footer class="footer mt-5 py-4 bg-white border-top">
       <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <div class="mb-2 mb-md-0">
-          <strong>🍀 Cooking App</strong> &mdash; share your favorite recipes.
+          <div class="mb-2 mb-md-0">
+          <strong>🍀 FamilyRecipes</strong> &mdash; share your favorite recipes.
         </div>
         <div>
           <a href="#" class="me-3 text-decoration-none">ℹ️ About</a>
