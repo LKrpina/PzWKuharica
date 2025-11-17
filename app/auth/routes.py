@@ -4,6 +4,7 @@ from flask_mail import Message
 from flask import url_for
 from app.extensions import mail
 from app.extensions import mongo
+from app.extensions import limiter
 from app.models.user_model import User
 from .forms import RegisterForm, LoginForm
 from bson import ObjectId
@@ -11,6 +12,7 @@ from bson import ObjectId
 auth = Blueprint("auth", __name__)
 
 @auth.route("/register", methods=["GET", "POST"])
+@limiter.limit("3/minute")
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
@@ -39,6 +41,7 @@ def register():
 
 
 @auth.route("/login", methods=["GET", "POST"])
+@limiter.limit("5/minute")
 def login():
     if current_user.is_authenticated:
         flash("You are already logged in!","info")
