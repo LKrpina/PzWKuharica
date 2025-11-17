@@ -8,6 +8,8 @@ from . import profile
 from .forms import ProfileForm
 import io
 
+from app.models.user_model import User
+
 @profile.route("/profile")
 @login_required
 def view_profile():
@@ -65,3 +67,25 @@ def get_profile_image(image_id):
     fs = GridFS(mongo.db)
     image = fs.get(ObjectId(image_id))
     return send_file(io.BytesIO(image.read()),mimetype=image.content_type)
+
+
+@profile.route("/user/<user_id>")
+def public_profile(user_id):
+    # Show public profile for a given user id
+    try:
+        uid = ObjectId(user_id)
+    except Exception:
+        flash("User not found.", "danger")
+        return redirect(url_for("main.home"))
+
+    user_data = mongo.db.users.find_one({"_id": uid})
+    if not user_data:
+        flash("User not found.", "danger")
+        return redirect(url_for("main.home"))
+
+    user = User(user_data)
+
+    # Fetch all recipes by this user (created_by stored as string of ObjectId)
+    recipes = list(mongo.db.recipes.find({"created_by": user_id}).sort("created_at", -1))
+
+    return render_template("profile/public_profile.html", user=user, recipes=recipes)

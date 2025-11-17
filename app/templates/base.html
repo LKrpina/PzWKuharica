@@ -6,23 +6,47 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>{% block title %}Cooking App{% endblock %}</title>
       {{ bootstrap.load_css() }}
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     {% endblock %}
   </head>
-  <body>
+  <body class="bg-light">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-custom mb-4">
       <div class="container">
-        <a class="navbar-brand" href="{{ url_for('main.home') }}">Cooking App</a>
-        <div class="collapse navbar-collapse">
+        <a class="navbar-brand fw-bold" href="{{ url_for('main.home') }}">🍽️ Cooking App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('recipes.all_recipes') }}">🍲 Browse</a></li>
+            {% if current_user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('recipes.new_recipe') }}">➕ New Recipe</a></li>
+            {% endif %}
+          </ul>
+
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('recipes.all_recipes') }}">Recipes</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+            {% if current_user.is_authenticated %}
+              {# Admin dashboard link: only show for admin users and make it visually prominent (red) #}
+              {% if current_user.is_admin %}
+                <li class="nav-item">
+                  <a class="nav-link text-danger fw-bold" href="{{ url_for('admin.dashboard') }}">🔴 Admin Dashboard</a>
+                </li>
+              {% endif %}
+
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('profile.view_profile') }}">👤 {{ current_user.name or 'Profile' }}</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">🚪 Logout</a></li>
+            {% else %}
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">🔒 Login</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">✍️ Register</a></li>
+            {% endif %}
           </ul>
         </div>
       </div>
     </nav>
 
-        <!-- Flash messages -->
+    <!-- Flash messages -->
     <div class="container mt-3">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -37,9 +61,23 @@
     </div>
 
     <!-- Main content -->
-    <div class="container">
+    <main class="container content-wrapper">
       {% block content %}{% endblock %}
-    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-5 py-4 bg-white border-top">
+      <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <div class="mb-2 mb-md-0">
+          <strong>🍀 Cooking App</strong> &mdash; share your favorite recipes.
+        </div>
+        <div>
+          <a href="#" class="me-3 text-decoration-none">ℹ️ About</a>
+          <a href="#" class="me-3 text-decoration-none">⚖️ Legal</a>
+          <a href="#" class="text-decoration-none">📄 Terms</a>
+        </div>
+      </div>
+    </footer>
 
     {{ bootstrap.load_js() }}
   </body>

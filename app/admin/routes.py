@@ -28,8 +28,18 @@ def dashboard():
 @login_required
 @admin_required
 def users():
-    all_users = list(mongo.db.users.find())
-    return render_template("admin/users.html", users=all_users)
+    # support searching by username or name (case-insensitive, partial)
+    q = request.args.get('q', '').strip()
+    query = {}
+    if q:
+        # search username or name fields
+        query = {"$or": [
+            {"username": {"$regex": q, "$options": "i"}},
+            {"name": {"$regex": q, "$options": "i"}}
+        ]}
+
+    all_users = list(mongo.db.users.find(query))
+    return render_template("admin/users.html", users=all_users, q=q)
 
 
 # --------------------------

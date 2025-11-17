@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ user.name or 'Profile' }}{% endblock %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow-sm p-4" style="max-width: 800px; margin: auto;">
+        <h3 class="mb-3 text-center">{{ user.name or 'Profile' }}</h3>
+        {% if user.profile_image_id %}
+        <img src="{{ url_for('profile.get_profile_image', image_id=user.profile_image_id) }}" 
+            class="img-thumbnail mb-3" width="150" height="150">
+        {% else %}
+        <img src="{{ url_for('static', filename='default_profile.png') }}" 
+            class="img-thumbnail mb-3" width="150" height="150">
+        {% endif %}
+        <p><strong>Name:</strong> {{ user.name }}</p>
+        <p><strong>Description:</strong> {{ user.description or "No description yet." }}</p>
+
+        <hr>
+        <h4>Recipes by {{ user.name }}</h4>
+        {% if recipes and recipes|length > 0 %}
+        <div class="row g-3 mt-2">
+            {% for r in recipes %}
+            <div class="col-md-6">
+                <div class="card h-100">
+                    {% if r.image_id %}
+                    <img src="{{ url_for('recipes.recipe_image', image_id=r.image_id) }}" class="card-img-top" alt="{{ r.title }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ r.title }}</h5>
+                        <p class="card-text text-truncate">{{ r.description[:150] }}{% if r.description|length > 150 %}...{% endif %}</p>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ r.category }}</small>
+                            <a href="{{ url_for('recipes.recipe_detail', recipe_id=r._id) }}" class="btn btn-sm btn-outline-success">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">No public recipes yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

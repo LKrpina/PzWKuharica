@@ -17,7 +17,23 @@ def create_app():
     bootstrap.init_app(app)
     register_error_handlers(app)
 
-    app.config["USERS_COLLECTION"] = mongo.db.users
+    # Set USERS_COLLECTION if a default database is available. When using
+    # a MongoDB URI without a default database (e.g. a MongoDB Atlas URI
+    # that does not include '/mydb' at the end), `mongo.db` may be None
+    # and accessing `mongo.db.users` raises AttributeError. Handle that
+    # gracefully so the app can start and report the misconfiguration.
+    try:
+        default_db = getattr(mongo, 'db', None)
+        # Database objects do not support truth-value testing; compare with None
+        if default_db is not None:
+            app.config["USERS_COLLECTION"] = default_db.users
+        else:
+            app.logger.warning("MongoDB default database not found - check MONGO_URI (missing '/<dbname>')")
+            app.config["USERS_COLLECTION"] = None
+    except Exception as exc:
+        # Log the underlying exception but don't crash the app at startup
+        app.logger.warning("Error accessing mongo.db at startup: %s", exc)
+        app.config["USERS_COLLECTION"] = None
     
 
     from .main.routes import main

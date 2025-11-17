@@ -14,8 +14,67 @@ recipes = Blueprint("recipes", __name__)
 
 @recipes.route("/recipes")
 def all_recipes():
-    recipes_list = list(mongo.db.recipes.find().sort("created_at", -1))
-    return render_template("recipes/all_recipes.html", recipes = recipes_list)
+    # Query params
+    q = request.args.get('q', '').strip()
+    category = request.args.get('category', '').strip()
+    try:
+        page = int(request.args.get('page', 1))
+        if page < 1:
+            page = 1
+    except ValueError:
+        page = 1
+
+    PER_PAGE = 6
+
+    # Build filter
+    query = {}
+    if q:
+        # search in title or description (case-insensitive)
+        query['$or'] = [
+            {'title': {'$regex': q, '$options': 'i'}},
+            {'description': {'$regex': q, '$options': 'i'}}
+        ]
+    if category:
+        query['category'] = category
+
+    total = mongo.db.recipes.count_documents(query)
+    skip = (page - 1) * PER_PAGE
+
+    recipes_list = list(mongo.db.recipes.find(query).sort('created_at', -1).skip(skip).limit(PER_PAGE))
+
+    # Fetch author names for displayed recipes
+    user_ids = {r.get('created_by') for r in recipes_list if r.get('created_by')}
+    authors = {}
+    if user_ids:
+        object_ids = []
+        for uid in user_ids:
+            try:
+                object_ids.append(ObjectId(uid))
+            except Exception:
+                pass
+        if object_ids:
+            users_cursor = mongo.db.users.find({'_id': {'$in': object_ids}})
+            for u in users_cursor:
+                authors[str(u.get('_id'))] = u.get('name') or u.get('email')
+
+    # Distinct categories for filter dropdown
+    categories = mongo.db.recipes.distinct('category')
+
+    # Pagination meta
+    total_pages = (total + PER_PAGE - 1) // PER_PAGE
+
+    return render_template(
+        "recipes/all_recipes.html",
+        recipes=recipes_list,
+        authors=authors,
+        page=page,
+        total_pages=total_pages,
+        q=q,
+        category=category,
+        categories=sorted([c for c in categories if c]),
+        total=total,
+        per_page=PER_PAGE,
+    )
 
 @recipes.route("/recipes/new", methods=["GET", "POST"])
 @login_required
@@ -67,7 +126,17 @@ def recipe_detail(recipe_id):
         abort(404)
 
     recipe = Recipe(recipe_data)
-    return render_template("recipes/recipe_detail.html", recipe=recipe)
+    # Fetch author data
+    author_name = None
+    try:
+        if recipe.created_by:
+            author_doc = mongo.db.users.find_one({"_id": ObjectId(recipe.created_by)})
+            if author_doc:
+                author_name = author_doc.get('name') or author_doc.get('email')
+    except Exception:
+        author_name = None
+
+    return render_template("recipes/recipe_detail.html", recipe=recipe, author_name=author_name)
 
 @recipes.route("/recipes/image/<image_id>")
 def recipe_image(image_id):

@@ -5,14 +5,62 @@
 <div class="container mt-4">
     <h2>All Recipes</h2>
 
-    <ul class="list-group mt-3">
+    <form method="get" class="row g-2 align-items-center mt-3">
+        <div class="col-sm-5">
+            <input type="search" name="q" class="form-control" placeholder="Search recipes..." value="{{ q }}">
+        </div>
+        <div class="col-sm-4">
+            <select name="category" class="form-select">
+                <option value="">All categories</option>
+                {% for cat in categories %}
+                <option value="{{ cat }}" {% if cat==category %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <button class="btn btn-success w-100">🔎 Search</button>
+        </div>
+    </form>
+
+    <div class="row g-3 mt-3">
         {% for r in recipes %}
-        <li class="list-group-item">
-            <a href="{{ url_for('recipes.recipe_detail', recipe_id=r._id) }}">
-                <strong>{{ r.title }}</strong>
-            </a> — {{ r.category }}
-        </li>
+        <div class="col-md-6">
+            <div class="card h-100">
+                {% if r.image_id %}
+                <img src="{{ url_for('recipes.recipe_image', image_id=r.image_id) }}" class="card-img-top" alt="{{ r.title }}">
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ r.title }}</h5>
+                    <p class="card-text text-truncate">{{ r.description[:150] }}{% if r.description|length > 150 %}...{% endif %}</p>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted">{{ r.category }}</small>
+                            &nbsp;•&nbsp;
+                            <a href="{{ url_for('profile.public_profile', user_id=r.created_by) }}" class="text-decoration-none">By: {{ authors.get(r.created_by, 'Profile') }}</a>
+                        </div>
+                        <a href="{{ url_for('recipes.recipe_detail', recipe_id=r._id) }}" class="btn btn-sm btn-outline-success">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item {% if page<=1 %}disabled{% endif %}">
+          <a class="page-link" href="?q={{ q }}&category={{ category }}&page={{ page-1 }}">Previous</a>
+        </li>
+
+        {% for p in range(1, total_pages+1) %}
+        <li class="page-item {% if p==page %}active{% endif %}"><a class="page-link" href="?q={{ q }}&category={{ category }}&page={{ p }}">{{ p }}</a></li>
+        {% endfor %}
+
+        <li class="page-item {% if page>=total_pages %}disabled{% endif %}">
+          <a class="page-link" href="?q={{ q }}&category={{ category }}&page={{ page+1 }}">Next</a>
+        </li>
+      </ul>
+    </nav>
 </div>
 {% endblock %}

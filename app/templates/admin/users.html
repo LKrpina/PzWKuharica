@@ -6,7 +6,19 @@
 
     <h2>User Management</h2>
 
-    <table class="table mt-3">
+        <form method="get" class="row g-2 align-items-center mt-3">
+            <div class="col-auto">
+                <input type="search" name="q" class="form-control" placeholder="Search by username or name" value="{{ q or '' }}">
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary">Search</button>
+                {% if q %}
+                    <a href="{{ url_for('admin.users') }}" class="btn btn-link">Clear</a>
+                {% endif %}
+            </div>
+        </form>
+
+        <table class="table mt-3">
         <thead>
             <tr>
                 <th>Email</th>
