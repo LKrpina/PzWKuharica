@@ -19,5 +19,32 @@
             <a href="{{ url_for('profile.edit_profile') }}" class="btn btn-primary w-100 mt-3">Edit Profile</a>
         </div>
     </div>
+    
+    <div class="container mt-4">
+        <h3 class="mb-3">My Recipes</h3>
+        {% if recipes and recipes|length > 0 %}
+        <div class="row g-3">
+            {% for recipe in recipes %}
+            <div class="col-md-6">
+                <div class="card h-100">
+                    {% if recipe.image_id %}
+                    <img src="{{ url_for('recipes.recipe_image', image_id=recipe.image_id) }}" class="card-img-top" alt="{{ recipe.title }}">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ recipe.title }}</h5>
+                        <p class="card-text text-truncate">{{ recipe.description[:150] }}{% if recipe.description|length > 150 %}...{% endif %}</p>
+                        <div class="mt-auto">
+                            <a href="{{ url_for('recipes.recipe_detail', recipe_id=recipe.id) }}" class="btn btn-sm btn-primary">View</a>
+                            <a href="{{ url_for('recipes.edit_recipe', recipe_id=recipe.id) }}" class="btn btn-sm btn-secondary">Edit</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">You haven't created any recipes yet.</p>
+        {% endif %}
+    </div>
 
 {% endblock %}

@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file
+from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, abort
 import io
 from bson import ObjectId
+from bson.errors import InvalidId
 from gridfs import GridFS
 from flask_login import login_required, current_user
 
@@ -55,19 +56,33 @@ def new_recipe():
 @recipes.route("/recipes/<recipe_id>")
 def recipe_detail(recipe_id):
     from app.models.recipe_model import Recipe
+    # Validate recipe_id and return 404 if invalid or missing
+    try:
+        oid = ObjectId(recipe_id)
+    except InvalidId:
+        abort(404)
 
-    recipe_data = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    recipe_data = mongo.db.recipes.find_one({"_id": oid})
     if not recipe_data:
-        flash("Recipe not found.", "danger")
-        return redirect(url_for("recipes.all_recipes"))
-    
+        abort(404)
+
     recipe = Recipe(recipe_data)
     return render_template("recipes/recipe_detail.html", recipe=recipe)
 
 @recipes.route("/recipes/image/<image_id>")
 def recipe_image(image_id):
     fs = GridFS(mongo.db)
-    image = fs.get(ObjectId(image_id))
+    # Validate image id and handle missing files with 404
+    try:
+        oid = ObjectId(image_id)
+    except InvalidId:
+        abort(404)
+
+    try:
+        image = fs.get(oid)
+    except Exception:
+        abort(404)
+
     return send_file(io.BytesIO(image.read()), mimetype=image.content_type)
 
 
@@ -76,11 +91,15 @@ def recipe_image(image_id):
 def delete_recipe(recipe_id):
     from app.models.recipe_model import Recipe
     fs = GridFS(mongo.db)
+    # Validate recipe id
+    try:
+        oid = ObjectId(recipe_id)
+    except InvalidId:
+        abort(404)
 
-    recipe_data = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    recipe_data = mongo.db.recipes.find_one({"_id": oid})
     if not recipe_data:
-        flash("Recipe not found.", "danger")
-        return redirect(url_for("recipes.all_recipes"))
+        abort(404)
 
     recipe = Recipe(recipe_data)
 
@@ -97,7 +116,7 @@ def delete_recipe(recipe_id):
             pass  # ignore if already deleted
 
     # Delete recipe
-    mongo.db.recipes.delete_one({"_id": ObjectId(recipe_id)})
+    mongo.db.recipes.delete_one({"_id": oid})
 
     flash("Recipe deleted successfully!", "success")
     return redirect(url_for("recipes.all_recipes"))
@@ -108,11 +127,15 @@ def delete_recipe(recipe_id):
 def edit_recipe(recipe_id):
     from app.models.recipe_model import Recipe
     fs = GridFS(mongo.db)
+    # Validate recipe id
+    try:
+        oid = ObjectId(recipe_id)
+    except InvalidId:
+        abort(404)
 
-    recipe_data = mongo.db.recipes.find_one({"_id": ObjectId(recipe_id)})
+    recipe_data = mongo.db.recipes.find_one({"_id": oid})
     if not recipe_data:
-        flash("Recipe not found!", "danger")
-        return redirect(url_for("recipes.all_recipes"))
+        abort(404)
     
     recipe = Recipe(recipe_data)
 

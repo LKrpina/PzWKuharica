@@ -8,12 +8,15 @@ from . import profile
 from .forms import ProfileForm
 import io
 
-
 @profile.route("/profile")
 @login_required
 def view_profile():
     user = mongo.db.users.find_one({"_id":ObjectId(current_user.id)})
-    return render_template("profile.html",user=user)
+    from app.models.recipe_model import Recipe
+    recipes_cursor = mongo.db.recipes.find({"created_by": current_user.id}).sort("created_at", -1)
+    recipes = [Recipe(r) for r in recipes_cursor]
+
+    return render_template("profile.html", user=user, recipes=recipes)
 
 @profile.route("/profile/edit", methods=["GET", "POST"])
 @login_required
