@@ -36,6 +36,11 @@ def create_app():
         app.config["USERS_COLLECTION"] = None
     
 
+    @app.route("/health")
+    def health():
+        return {"status": "ok"}, 200
+
+
     from .main.routes import main
     from .auth.routes import auth
     from .recipes.routes import recipes
