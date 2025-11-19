@@ -11,6 +11,4 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: MONGO_URI
-        fromDatabase:
-          name: familyrecipes-db
-          property: connectionString
+        value: mongodb+srv://lkrpina24_db_user:iPlWIPAzvlqAg8Xg@familyrecipe-cluster.ok9i1yd.mongodb.net/pzwkuharica?appName=familyrecipe-cluster
