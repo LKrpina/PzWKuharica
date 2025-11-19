@@ -11,8 +11,8 @@ class Config:
     SESSION_COOKIE_NAME = "session"
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
-    SESSION_COOKIE_SECURE = False  # must be False for localhost
-    REMEMBER_COOKIE_DURATION = 86400  # 1 day
+    SESSION_COOKIE_SECURE = False 
+    REMEMBER_COOKIE_DURATION = 86400
     SESSION_PERMANENT = False
 
     MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/mydatabase")

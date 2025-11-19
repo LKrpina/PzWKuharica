@@ -42,28 +42,3 @@ Open http://127.0.0.1:5000 in your browser.
 
 See `.env.example` for full placeholders.
 
-## Running in production (short note)
-
-Do NOT use the built-in Flask dev server in production. A minimal production start using Gunicorn looks like:
-
-```bash
-# from project root, with your virtualenv active
-pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:8000 run:app
-```
-
-On a platform like Render, set environment variables in the dashboard (do NOT commit real secrets). `runtime.txt` is already set to `python-3.11.12` for compatibility.
-
-## Testing / demo notes for school
-- To demo: register a user, verify email, create a recipe, show search/pagination and profile -> "My Recipes".
-- Admin: create a user and set `is_admin: true` in the `users` collection (or add a small admin seeding script) to access the admin dashboard.
-
-## Security / production reminders
-- Keep `DEBUG=False` and `SECRET_KEY` secret in production.
-- Use a persistent rate-limit backend (Redis) for real deployments.
-- Use TLS (HTTPS) and set `SESSION_COOKIE_SECURE=True` in production.
-
-If you want, I can add a short `Procfile` or a `render.yaml` with recommended build settings — say the word and I’ll scaffold it.
-
----
-Short and simple. Good luck with the project — if you want, I can also add a one-page demo script you can read aloud during your presentation.
