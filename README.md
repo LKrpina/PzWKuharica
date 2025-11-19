@@ -4,6 +4,67 @@ Small Flask + MongoDB recipe app used for a school project. It includes user reg
 
 This README is intentionally short — just what you need to run the project locally and a couple of deployment hints.
 
+## Project structure
+
+```
+├── .env
+├── .env.example
+├── .gitignore
+├── README.md
+├── render.yaml
+├── requirements.txt
+├── runtime.txt
+├── run.py
+└── app/
+	├── __init__.py
+	├── config.py
+	├── extensions.py
+	├── markdown_utils.py
+	├── models/
+	│   ├── recipe_model.py
+	│   └── user_model.py
+	├── admin/
+	│   ├── __init__.py
+	│   ├── decorators.py
+	│   └── routes.py
+	├── auth/
+	│   ├── __init__.py
+	│   ├── forms.py
+	│   └── routes.py
+	├── main/
+	│   ├── errors.py
+	│   └── routes.py
+	├── profile/
+	│   ├── __init__.py
+	│   ├── forms.py
+	│   └── routes.py
+	├── recipes/
+	│   ├── __init__.py
+	│   ├── forms.py
+	│   └── routes.py
+	├── static/
+	│   └── css/
+	│       └── custom.css
+	└── templates/
+		├── base.html
+		├── edit_profile.html
+		├── errors.html
+		├── home.html
+		├── login.html
+		├── register.html
+		├── profile.html
+		├── admin/
+		│   ├── dashboard.html
+		│   └── users.html
+		├── profile/
+		│   └── public_profile.html
+		└── recipes/
+			├── all_recipes.html
+			├── edit_recipe.html
+			├── new_recipe.html
+			└── recipe_detail.html
+```
+
 ## Quick start (local)
 
 1. Create and activate a virtual environment (Python 3.11+ recommended):
